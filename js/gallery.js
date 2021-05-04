@@ -29,12 +29,6 @@ const btnClose = document.querySelector('[data-action="close-lightbox"]');
 const imgLightboxRef = document.querySelector('.lightbox__image');
 const overlayRef = document.querySelector('.lightbox__overlay');
 const linkRef = document.querySelectorAll('.gallery__link');
-
-linkRef.forEach((aLink) => {
-  aLink.addEventListener('click', (event) => {
-    event.preventDefault();
-  });
-});
  
 galleryRef.addEventListener('click', onClickCard);
 btnClose.addEventListener('click', closeModal);
@@ -45,27 +39,30 @@ const linkRefLength = arrayLinkRef.length;
 let indexEl = 0;
 
 function onClickCard(event) {
+  event.preventDefault();
   if (!event.target.classList.contains("gallery__image")) {
     return;
   };
 
-  openCloseModal();
+  openModal();
 
   imgLightboxRef.src = event.target.dataset.source;
+  imgLightboxRef.alt = event.target.alt;
   // получаю индекс текущего элемента
   indexEl = arrayLinkRef.indexOf(event.target.closest('.gallery__link'));
 };
 
 // функция открывает модальное окно и вешает слушатель на клавиатуру
-function openCloseModal() {
+function openModal() {
   modalWindowRef.classList.toggle('is-open');
   window.addEventListener('keydown', onPressKey);
 };
 
 // функция закрывает модальное окно и снимает слушатель с клавиатуры
 function closeModal() {
-  openCloseModal();
+  modalWindowRef.classList.remove('is-open');
   imgLightboxRef.src = '';
+  imgLightboxRef.alt = '';
   window.removeEventListener('keydown', onPressKey);
 };
 
@@ -83,7 +80,7 @@ function onPressKey(evt) {
   };
 
   // перелистывание при нажатии ArrowRight
-  if (evt.code === 'ArrowRight' &&  indexEl < linkRefLength) {
+  if (evt.code === 'ArrowRight' &&  indexEl < linkRefLength - 1) {
      imgLightboxRef.src = arrayLinkRef[indexEl + 1].href;
      indexEl += 1;
   };
